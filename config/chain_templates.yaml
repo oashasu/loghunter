@@ -4,6 +4,7 @@ chain_templates:
   templates:
     - name: "支付流水链路"
       trigger_type: "支付流水号"
+      start_type: "payment"
       nodes:
         - id: "payment"
           table: "pay_create"
@@ -29,6 +30,7 @@ chain_templates:
 
     - name: "订单号链路"
       trigger_type: "订单号"
+      start_type: "order"
       nodes:
         - id: "order"
           table: "orders"
@@ -45,3 +47,37 @@ chain_templates:
       time_window:
         before_minutes: 10
         after_minutes: 15
+
+    - name: "退款链路"
+      trigger_type: "退款单号"
+      start_type: "refund"
+      nodes:
+        - id: "refund"
+          table: "refund_create"
+          query_field: "refund_no"
+          output_fields: ["refund_no", "pay_no", "order_no", "status"]
+          next_nodes: ["payment"]
+
+        - id: "payment"
+          table: "pay_create"
+          query_field: "pay_no"
+          output_fields: ["pay_no", "order_no", "channel_id", "status"]
+          next_nodes: []
+
+      time_window:
+        before_minutes: 5
+        after_minutes: 60
+
+    - name: "会员链路"
+      trigger_type: "会员ID"
+      start_type: "member"
+      nodes:
+        - id: "member"
+          table: "member"
+          query_field: "member_id"
+          output_fields: ["member_id", "name", "status"]
+          next_nodes: []
+
+      time_window:
+        before_minutes: 30
+        after_minutes: 30
