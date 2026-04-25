@@ -1,0 +1,21 @@
+# ELK连接配置
+elk:
+  es_host: "http://192.168.100.219:9200"
+  kibana_host: "http://192.168.100.219:5601"
+
+  # 认证配置（内网免认证时留空）
+  auth:
+    enabled: false
+    username: ""
+    password: ""
+
+  # 索引配置
+  index:
+    pattern: "logstash-*"
+    time_field: "@timestamp"
+
+  # 查询配置
+  query:
+    default_time_range_hours: 24
+    max_size: 10000
+    timeout_seconds: 60

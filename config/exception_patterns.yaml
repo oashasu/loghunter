@@ -1,0 +1,31 @@
+# 异常类型定义
+exception_patterns:
+  version: "1.0"
+  patterns:
+    - type: "ChannelTimeoutException"
+      severity: "high"
+      domain: "payment"
+      keywords: ["timeout", "超时", "等待渠道响应"]
+      description: "支付渠道响应超时"
+      suggestion: "检查渠道服务状态、网络连接"
+
+    - type: "PaymentFailedException"
+      severity: "high"
+      domain: "payment"
+      keywords: ["支付失败", "payment failed"]
+      description: "支付失败"
+      suggestion: "检查支付参数、渠道返回码"
+
+    - type: "NetworkException"
+      severity: "medium"
+      domain: "network"
+      keywords: ["network", "网络异常", "connection"]
+      description: "网络异常"
+      suggestion: "检查网络连接状态"
+
+    - type: "RefundFailedException"
+      severity: "high"
+      domain: "payment"
+      keywords: ["退款失败", "refund failed"]
+      description: "退款失败"
+      suggestion: "检查退款参数、渠道退款接口状态"

@@ -1,0 +1,16 @@
+# LogHunter - 日志智能检索Agent
+# Phase 1 技术栈
+
+# Agent框架
+langgraph>=0.2.0
+
+# 配置加载
+pyyaml>=6.0
+
+# HTTP客户端（ELK查询）
+requests>=2.32.0
+
+# 测试框架
+pytest>=8.0.0
+pytest-mock>=3.14.0
+pytest-cov>=5.0.0

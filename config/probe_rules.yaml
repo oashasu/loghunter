@@ -1,0 +1,39 @@
+# 参数探测规则
+probe_rules:
+  version: "1.0"
+  rules:
+    - name: "订单号"
+      patterns:
+        - regex: "^[A-Z]{2}[0-9]{12}$"
+          description: "网络订单号"
+          tables: ["orders"]
+          priority: 1
+        - regex: "^[0-9]{16}$"
+          description: "窗口售票订单号"
+          tables: ["ticket_orders"]
+          priority: 2
+      probe_sql_template: "SELECT id, order_no FROM {table} WHERE order_no = '{input}' LIMIT 1"
+
+    - name: "支付流水号"
+      patterns:
+        - regex: "^P[0-9]{14}$"
+          description: "支付流水号"
+          tables: ["pay_create", "pay_callback"]
+          priority: 1
+      probe_sql_template: "SELECT pay_no, order_no, channel_id, status FROM {table} WHERE pay_no = '{input}' LIMIT 1"
+
+    - name: "退款单号"
+      patterns:
+        - regex: "^R[0-9]{14}$"
+          description: "退款单号"
+          tables: ["refund_create"]
+          priority: 1
+      probe_sql_template: "SELECT refund_no, pay_no, status FROM {table} WHERE refund_no = '{input}' LIMIT 1"
+
+    - name: "会员ID"
+      patterns:
+        - regex: "^M[0-9]{8}$"
+          description: "会员ID"
+          tables: ["member"]
+          priority: 1
+      probe_sql_template: "SELECT member_id, name FROM {table} WHERE member_id = '{input}' LIMIT 1"
