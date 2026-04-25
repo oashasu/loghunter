@@ -2,34 +2,60 @@
 root_cause_rules:
   version: "1.0"
   rules:
-    - exception_type: "ChannelTimeoutException"
-      possible_causes:
-        - cause: "渠道服务响应延迟"
-          keywords: ["timeout", "超时"]
-          confidence: 0.85
-        - cause: "网络连接不稳定"
-          keywords: ["network", "网络"]
-          confidence: 0.7
-        - cause: "渠道服务不可用"
-          keywords: ["unavailable", "不可用"]
-          confidence: 0.9
+    - name: "支付超时"
+      conditions:
+        - chain_status: "failed"
+        - log_keyword: "ChannelTimeoutException"
+        - log_keyword: "超时"
       suggestions:
-        - "检查渠道服务状态"
-        - "检查网络连接"
-        - "检查渠道超时配置"
+        - "检查渠道配置超时时间"
+        - "确认渠道服务是否正常"
+        - "查看渠道方是否有响应"
 
-    - exception_type: "PaymentFailedException"
-      possible_causes:
-        - cause: "支付参数错误"
-          keywords: ["参数错误", "invalid"]
-          confidence: 0.8
-        - cause: "渠道返回失败"
-          keywords: ["渠道返回", "failed"]
-          confidence: 0.85
-        - cause: "余额不足"
-          keywords: ["余额不足", "balance"]
-          confidence: 0.75
+    - name: "支付渠道异常"
+      conditions:
+        - chain_status: "failed"
+        - log_keyword: "PaymentFailedException"
+        - log_keyword: "渠道"
       suggestions:
-        - "检查支付参数"
-        - "检查渠道返回码"
-        - "检查用户余额"
+        - "检查渠道接口返回码"
+        - "确认渠道账户状态"
+        - "验证渠道签名配置"
+
+    - name: "支付金额异常"
+      conditions:
+        - chain_status: "failed"
+        - log_keyword: "金额"
+        - log_keyword: "AmountMismatchException"
+      suggestions:
+        - "检查订单金额与支付金额是否一致"
+        - "验证金额计算逻辑"
+        - "确认是否有优惠活动影响"
+
+    - name: "网络订单异常"
+      conditions:
+        - chain_status: "failed"
+        - business_type: "订单号"
+        - log_keyword: "ERROR"
+      suggestions:
+        - "检查订单创建流程"
+        - "确认库存状态"
+        - "验证会员信息"
+
+    - name: "退款处理异常"
+      conditions:
+        - chain_status: "failed"
+        - business_type: "退款单号"
+        - log_keyword: "ERROR"
+      suggestions:
+        - "检查退款流程"
+        - "确认退款金额"
+        - "验证退款状态"
+
+    - name: "未知异常"
+      conditions:
+        - chain_status: "failed"
+      suggestions:
+        - "收集完整日志进行分析"
+        - "检查相关系统状态"
+        - "联系技术支持"
